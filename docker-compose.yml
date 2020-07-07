@@ -17,9 +17,8 @@ services:
     build: .
     depends_on:
       - rabbitmq
-      - celery
     ports:
       - 5555:5555
-    command: celery flower -A tasks --loglevel=info
+    command: flower -A dailytasks --port=5555
     volumes:
       - .:/app
