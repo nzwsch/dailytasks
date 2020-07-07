@@ -1,7 +1,11 @@
 amqp==2.6.0
 billiard==3.6.3.0
 celery==4.4.6
+flower==0.9.5
 future==0.18.2
+humanize==2.5.0
 kombu==4.6.11
+prometheus-client==0.8.0
 pytz==2020.1
+tornado==6.0.4
 vine==1.3.0

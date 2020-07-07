@@ -7,9 +7,19 @@ services:
       driver: none
 
   celery:
-    image: python:3.6.11-slim
     build: .
     depends_on:
       - rabbitmq
+    volumes:
+      - .:/app
+
+  flower:
+    build: .
+    depends_on:
+      - rabbitmq
+      - celery
+    ports:
+      - 5555:5555
+    command: celery flower -A tasks --loglevel=info
     volumes:
       - .:/app
