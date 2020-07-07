@@ -8,6 +8,8 @@ services:
 
   celery:
     build: .
+    environment:
+      WEBHOOK_URL: ${WEBHOOK_URL}
     depends_on:
       - rabbitmq
     volumes:
