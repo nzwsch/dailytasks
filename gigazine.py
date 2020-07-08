@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup
-import json
 
 
 def parse(text):
@@ -28,6 +27,8 @@ def parse(text):
 
 
 if __name__ == "__main__":
+    import json
+
     text = ""
     with open("html/20200706-headline.html") as f:
         text = f.read()
