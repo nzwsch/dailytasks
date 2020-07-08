@@ -4,8 +4,10 @@
 **/.editorconfig
 **/.env
 **/.git
+**/.gitattributes
 **/.gitignore
 **/.project
+**/.pytest_cache
 **/.settings
 **/.toolstarget
 **/.vs
@@ -18,9 +20,15 @@
 **/charts
 **/docker-compose*
 **/Dockerfile*
+**/html
+**/jobs
+**/json
 **/node_modules
 **/npm-debug.log
 **/obj
 **/secrets.dev.yaml
+**/test.txt
+**/tests
 **/values.dev.yaml
+**/web
 README.md
