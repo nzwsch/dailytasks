@@ -63,6 +63,6 @@ if __name__ == "__main__":
     for embed_list in embeded_partition:
         title = '2020年7月6日のヘッドラインニュース ({}/{})'.format(iterate,
                                                       len(embeded_partition))
-        webhook.post_link(title, embeds)
+        webhook.post_link(title, embed_list)
         time.sleep(1)
         iterate += 1

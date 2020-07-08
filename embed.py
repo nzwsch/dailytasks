@@ -40,9 +40,11 @@ def get_description(soup):
     twtr_desc = soup.select_one('meta[property="twitter:description" i]')
     meta_desc = soup.select_one('meta[name="description" i]')
 
-    description = (ogrp_desc and ogrp_desc.get('content') or
-                   twtr_desc and twtr_desc.get('content') or
-                   meta_desc and meta_desc.get('content'))
+    raw_desc = (ogrp_desc and ogrp_desc.get('content') or
+                twtr_desc and twtr_desc.get('content') or
+                meta_desc and meta_desc.get('content'))
+
+    description = raw_desc.replace('\n', '')
 
     if len(description) > max_len:
         return '{}...'.format(description[0:max_len-1])
