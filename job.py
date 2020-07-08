@@ -12,7 +12,7 @@ if __name__ == "__main__":
     cats = gigazine.parse(text)
 
     category = '新商品（衣・食・住）'
-    category_color = '2674689'
+    category_color = '#28d001'
 
     isyokuju = cats.get(category)
     print(len(isyokuju))
@@ -34,7 +34,6 @@ if __name__ == "__main__":
                                    color=category_color,
                                    author=result.get('author'),
                                    image=result.get('image'),
-                                   icon=result.get('icon'),
                                    description=result.get('description'))
 
         embeds.append(embeded)

@@ -5,33 +5,21 @@ from os import environ
 webhook_url = environ.get('WEBHOOK_URL')
 
 
-def to_embed(title=None, url=None, category=None, color=None, author=None, image=None, icon=None, description=None):
+def to_embed(title=None, url=None, category=None, color=None, author=None, image=None, description=None):
     embed = {"type": "link"}
 
     if title:
         embed['title'] = title
-
     if url:
         embed['url'] = url
-
     if category:
-        icon_url = None  # "https://gigazine.net/favicon.ico"
-        embed['footer'] = {"icon_url": icon_url, "text": category}
-
+        embed['footer'] = {"text": category}
     if color:
-        embed['color'] = color
-
+        embed['color'] = int(color.replace('#', '0x'), 16)
     if author:
         embed['author'] = {"name": author}
-
     if image:
-        image_url = urllib.parse.urljoin(url, image)
-        embed['thumbnail'] = {"url": image_url}
-
-    if icon and None:
-        icon_url = urllib.parse.urljoin(url, icon)
-        embed['author']['icon_url'] = icon_url
-
+        embed['thumbnail'] = {"url": urllib.parse.urljoin(url, image)}
     if description:
         embed['description'] = description
 
@@ -59,7 +47,7 @@ if __name__ == "__main__":
                 "icon_url": "https://gigazine.net/apple-touch-icon.png",
                 "text": "新商品（衣・食・住）"
             },
-            "color": 2674689,
+            "color": "#28d001",
             "thumbnail": {
                 "url": "https://www.haagen-dazs.co.jp/common/img/og_top_news.jpg"
             },
