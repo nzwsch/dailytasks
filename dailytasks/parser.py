@@ -1,26 +1,10 @@
 from bs4 import BeautifulSoup
 
 
-def download_c19():
-    """
-    Not yet implemented.
-    """
-    # import requests
-    # from os import path
-    # import time
-    # from urllib.parse import urlparse
-    # headline_link_selector = '.content > section > div > h2 > a'
-    with open('test.txt') as f:
-        for line in f.readlines():
-            url = line.rstrip()
-            urlpath = urlparse(url).path
-            filename = '{}.html'.format(path.basename(path.abspath(urlpath)))
-            dist = path.join('html', filename)
-            page = requests.get(url)
-            print(page.status_code, url)
-            time.sleep(2)
-            with open(dist, 'w') as fw:
-                fw.write(page.text)
+def get_og_title(text):
+    soup = BeautifulSoup(text, 'html5lib')
+    og_title = soup.select_one('meta[property="og:title"]')
+    return og_title['content']
 
 
 def get_categories(text):

@@ -1,8 +1,16 @@
-import requests
-import urllib.parse
 from os import environ
+import requests
+import time
+import urllib.parse
 
+per_seconds = 2  # per two seconds
 webhook_url = environ.get('WEBHOOK_URL')
+
+
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
 
 
 def to_embed(title=None, url=None, category=None, color=None, author=None, image=None, description=None):
@@ -31,27 +39,24 @@ def post_link(title, embeds):
         "content": title,
         "embeds": embeds
     })
+
+    # TODO: use logging instead
     if r.status_code >= 300:
         print(r.status_code, r.text)
-    else:
-        print(r.status_code)
+
+    return r.status_code
 
 
-if __name__ == "__main__":
-    embed_list = [
-        {
-            "type": "link",
-            "title": "「ハーゲンダッツ『ジャポネ きなこのティラミス』」2020年7月14日｜ハーゲンダッツ ジャパン",
-            "url": "https://www.haagen-dazs.co.jp/company/newsrelease/2020/_0706_2.html",
-            "footer": {
-                "icon_url": "https://gigazine.net/apple-touch-icon.png",
-                "text": "新商品（衣・食・住）"
-            },
-            "color": "#28d001",
-            "thumbnail": {
-                "url": "https://www.haagen-dazs.co.jp/common/img/og_top_news.jpg"
-            },
-            "description": "ハーゲンダッツ（Häagen-Dazs）の「ハーゲンダッツ『ジャポネ きなこのティラミス』」が発売になります！是非、アイスクリームのラインナップをチェックして、ハーゲンダッツの世界をお楽しみください。"
-        }
-    ]
-    post_link("2020年7月6日のヘッドラインニュース", json.loads(embed_list))
+def post_all(og_title, embeds):
+    status_codes = []
+    iterate = 1
+    embeded_partition = list(chunks(embeds, 10))
+
+    for embeded_part in embeded_partition:
+        title = '{} ({}/{})'.format(og_title, iterate, len(embeded_partition))
+        status_code = post_link(title, embeded_part)
+        time.sleep(per_seconds)
+        iterate += 1
+        status_codes.append(status_code)
+
+    return status_codes
