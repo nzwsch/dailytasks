@@ -1,14 +1,14 @@
 from __future__ import absolute_import, unicode_literals
 
-# from dailytasks.celery import app
+from dailytasks.celery import app
 
 import requests
 import json
 import random
 
-import embed
-import parser
-import webhook
+from dailytasks import embed
+from dailytasks import parser
+from dailytasks import webhook
 
 category_list = [{'color': '#ff0094', 'name': 'ネタ（メモ・その他いろいろ）'},
                  {'color': '#002aff', 'name': 'ライフスタイル（人生・生活・健康）'},
@@ -48,11 +48,9 @@ def get_embed_items(category, cateogry_items):
     return embed_items
 
 
-# @app.task
-def execute(url):
+@app.task
+def add(url):
     r = requests.get(url)
-    # with open("html/20200706-headline.html") as f:
-    #     content = f.read()
 
     og_title = parser.get_og_title(r.content)
     categories = parser.get_categories(r.content)
