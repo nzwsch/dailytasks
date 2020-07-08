@@ -1,1 +1,1 @@
-* * * * * echo "hello stackoverflow" >> /test_file 2>&1
+* * * * * /usr/local/bin/daily.sh 2>&1
