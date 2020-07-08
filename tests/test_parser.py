@@ -9,6 +9,6 @@ def open_headline(filename):
     return text
 
 
-def test_get_categories():
+def test_get_categories_has_eight_keys():
     text = open_headline('20200706-headline.html')
-    get_categories(text)
+    assert len(get_categories(text).keys()) == 8

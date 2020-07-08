@@ -10,12 +10,12 @@ def download_c19():
     # import time
     # from urllib.parse import urlparse
     # headline_link_selector = '.content > section > div > h2 > a'
-    with open('../test.txt') as f:
+    with open('test.txt') as f:
         for line in f.readlines():
             url = line.rstrip()
             urlpath = urlparse(url).path
             filename = '{}.html'.format(path.basename(path.abspath(urlpath)))
-            dist = path.join('../html', filename)
+            dist = path.join('html', filename)
             page = requests.get(url)
             print(page.status_code, url)
             time.sleep(2)
@@ -50,12 +50,13 @@ def get_categories(text):
 
 if __name__ == "__main__":
     import json
+    from pprint import pprint
 
     text = ""
     with open("html/20200706-headline.html") as f:
         text = f.read()
-    cats = parse(text)
-    # print(cats)
+    cats = get_categories(text)
+    pprint(cats)
 
     with open("json/result.json", "w") as f:
         f.write(json.dumps(cats, ensure_ascii=False, indent=4))
