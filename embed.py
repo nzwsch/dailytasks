@@ -1,14 +1,18 @@
 from bs4 import BeautifulSoup
 
+max_len = 60
+
 
 def get_author(soup):
     ogrp_author = soup.select_one('meta[property="og:article:author" i]')
+    ogsite_name = soup.select_one('meta[property="og:site_name" i]')
     twtr_author = soup.select_one('meta[name="twitter:creator" i]')
     meta_author = soup.select_one('meta[name="author" i]')
 
     return (ogrp_author and ogrp_author.get('content') or
-            twtr_author and twtr_author.get('content') or
-            meta_author and meta_author.get('content'))
+            ogsite_name and ogsite_name.get('content') or
+            meta_author and meta_author.get('content') or
+            twtr_author and twtr_author.get('content'))
 
 
 def get_image(soup):
@@ -36,9 +40,14 @@ def get_description(soup):
     twtr_desc = soup.select_one('meta[property="twitter:description" i]')
     meta_desc = soup.select_one('meta[name="description" i]')
 
-    return (ogrp_desc and ogrp_desc.get('content') or
-            twtr_desc and twtr_desc.get('content') or
-            meta_desc and meta_desc.get('content'))
+    description = (ogrp_desc and ogrp_desc.get('content') or
+                   twtr_desc and twtr_desc.get('content') or
+                   meta_desc and meta_desc.get('content'))
+
+    if len(description) > max_len:
+        return '{}...'.format(description[0:max_len-1])
+    else:
+        return description
 
 
 def parse(text):
@@ -49,7 +58,7 @@ def parse(text):
     icon = get_icon(soup)
     description = get_description(soup)
 
-    return {'auhtor': author,
+    return {'author': author,
             'image': image,
             'icon': icon,
             'description': description}
@@ -62,5 +71,12 @@ if __name__ == "__main__":
         text = f.read()
         result = parse(text)
 
-    with open("result.json", "w") as f:
+    with open("result-idJPKBN24705X.json", "w") as f:
+        f.write(json.dumps(result, ensure_ascii=False, indent=4))
+
+    with open("html/000981.html") as f:
+        text = f.read()
+        result = parse(text)
+
+    with open("result-000981.json", "w") as f:
         f.write(json.dumps(result, ensure_ascii=False, indent=4))

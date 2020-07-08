@@ -23,14 +23,14 @@ if __name__ == "__main__":
         text = item['text']
         href = item['href']
 
-        res = requests.get(href)
-        print(res.status_code, href)
+        r = requests.get(href)
+        print(r.status_code, href)
 
-        result = embed.parse(res.text)
+        result = embed.parse(r.content)
 
         embeded = webhook.to_embed(title=text,
                                    url=href,
-                                   category=category,
+                                   category='カテゴリ◆{}'.format(category),
                                    color=category_color,
                                    author=result.get('author'),
                                    image=result.get('image'),

@@ -15,7 +15,7 @@ def to_embed(title=None, url=None, category=None, color=None, author=None, image
         embed['url'] = url
 
     if category:
-        icon_url = "https://gigazine.net/apple-touch-icon.png"
+        icon_url = None  # "https://gigazine.net/favicon.ico"
         embed['footer'] = {"icon_url": icon_url, "text": category}
 
     if color:
@@ -28,7 +28,7 @@ def to_embed(title=None, url=None, category=None, color=None, author=None, image
         image_url = urllib.parse.urljoin(url, image)
         embed['thumbnail'] = {"url": image_url}
 
-    if author and icon:
+    if icon and None:
         icon_url = urllib.parse.urljoin(url, icon)
         embed['author']['icon_url'] = icon_url
 
@@ -56,7 +56,7 @@ if __name__ == "__main__":
             "title": "「ハーゲンダッツ『ジャポネ きなこのティラミス』」2020年7月14日｜ハーゲンダッツ ジャパン",
             "url": "https://www.haagen-dazs.co.jp/company/newsrelease/2020/_0706_2.html",
             "footer": {
-                "icon_url": "https://gigazine.net/apple-touch-icon.png"
+                "icon_url": "https://gigazine.net/apple-touch-icon.png",
                 "text": "新商品（衣・食・住）"
             },
             "color": 2674689,
