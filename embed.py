@@ -73,12 +73,12 @@ if __name__ == "__main__":
         text = f.read()
         result = parse(text)
 
-    with open("result-idJPKBN24705X.json", "w") as f:
+    with open("json/result-idJPKBN24705X.json", "w") as f:
         f.write(json.dumps(result, ensure_ascii=False, indent=4))
 
     with open("html/000981.html") as f:
         text = f.read()
         result = parse(text)
 
-    with open("result-000981.json", "w") as f:
+    with open("json/result-000981.json", "w") as f:
         f.write(json.dumps(result, ensure_ascii=False, indent=4))

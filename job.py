@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
     random.shuffle(embeds)
 
-    with open("result.json", "w") as f:
+    with open("json/result.json", "w") as f:
         f.write(json.dumps(embeds, ensure_ascii=False, indent=4))
 
     iterate = 1

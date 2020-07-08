@@ -35,5 +35,5 @@ if __name__ == "__main__":
     cats = parse(text)
     # print(cats)
 
-    with open("result.json", "w") as f:
+    with open("json/result.json", "w") as f:
         f.write(json.dumps(cats, ensure_ascii=False, indent=4))
