@@ -1,11 +1,45 @@
 import requests
+import urllib.parse
 from os import environ
 
 webhook_url = environ.get('WEBHOOK_URL')
 
 
+def to_embed(title=None, url=None, category=None, color=None, author=None, image=None, icon=None, description=None):
+    embed = {"type": "link"}
+
+    if title:
+        embed['title'] = title
+
+    if url:
+        embed['url'] = url
+
+    if category:
+        icon_url = "https://gigazine.net/apple-touch-icon.png"
+        embed['footer'] = {"icon_url": icon_url, "text": category}
+
+    if color:
+        embed['color'] = color
+
+    if author:
+        embed['author'] = {"name": author}
+
+    if image:
+        image_url = urllib.parse.urljoin(url, image)
+        embed['thumbnail'] = {"url": image_url}
+
+    if author and icon:
+        icon_url = urllib.parse.urljoin(url, icon)
+        embed['author']['icon_url'] = icon_url
+
+    if description:
+        embed['description'] = description
+
+    return embed
+
+
 def post_link(title, embeds):
-    r = requests.post(webhook_url, json={
+    r = requests.post("{}?wait=true".format(webhook_url), json={
         "content": title,
         "embeds": embeds
     })
@@ -18,16 +52,18 @@ def post_link(title, embeds):
 if __name__ == "__main__":
     embed_list = [
         {
-            "author": {
-                "name": "サイエンス（科学・学問・テクノロジー）"
-            },
-            "title": "コロナは空気感染もと科学者数百人、ＷＨＯに対策求める＝ＮＹＴ紙 - ロイター",
             "type": "link",
-            "url": "https://jp.reuters.com/article/covid-health-transmit-scientists-idJPKBN24705X",
-            "thumbnail": {
-                "url": "https://s3.reutersmedia.net/resources/r/?m=02&d=20200706&t=2&i=1524718785&w=1200&r=LYNXMPEG65026",
+            "title": "「ハーゲンダッツ『ジャポネ きなこのティラミス』」2020年7月14日｜ハーゲンダッツ ジャパン",
+            "url": "https://www.haagen-dazs.co.jp/company/newsrelease/2020/_0706_2.html",
+            "footer": {
+                "icon_url": "https://gigazine.net/apple-touch-icon.png"
+                "text": "新商品（衣・食・住）"
             },
-            "description": "世界保健機関（ＷＨＯ）に対し、科学者数百人が、新型コロナウイルスの空気感染の可能性を示す科学的根拠があると指摘し、対応策の推奨を改定するよう求めていることが分かった。米紙ニューヨーク・タイムズ（ＮＹＴ）が４日に報じた。"
+            "color": 2674689,
+            "thumbnail": {
+                "url": "https://www.haagen-dazs.co.jp/common/img/og_top_news.jpg"
+            },
+            "description": "ハーゲンダッツ（Häagen-Dazs）の「ハーゲンダッツ『ジャポネ きなこのティラミス』」が発売になります！是非、アイスクリームのラインナップをチェックして、ハーゲンダッツの世界をお楽しみください。"
         }
     ]
-    post_link("2020年7月6日のヘッドラインニュース", embed_list)
+    post_link("2020年7月6日のヘッドラインニュース", json.loads(embed_list))
