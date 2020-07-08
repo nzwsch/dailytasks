@@ -6,6 +6,9 @@ services:
     logging:
       driver: none
 
+  cron:
+    build: ./jobs
+
   celery:
     build: .
     environment:
