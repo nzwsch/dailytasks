@@ -1,3 +1,6 @@
 **/.env
-**/html
+**/html/*
 **/json
+
+# excludes
+!**/html/20200706-headline.html
