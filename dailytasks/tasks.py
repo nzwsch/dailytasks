@@ -74,9 +74,14 @@ def get_embed_items(category, cateogry_items):
         r = requests.get(href)
 
         # TODO: use logging
-        print(r.status_code, href)
+        print(r.status_code, href, r.headers.get('content-type'))
 
-        result = embed.parse(r.content)
+        # sometime they give pdf link to us...
+        if r.headers.get('content-type').startswith("text/html"):
+            result = embed.parse(r.content)
+        else:
+            result = {}
+
         embed_item = webhook.to_embed(title=text,
                                       url=href,
                                       category=category_name,
