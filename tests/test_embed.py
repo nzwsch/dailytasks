@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from dailytasks.embed import get_author
+from dailytasks.embed import parse
 
 
 def make_soup(text):
@@ -46,3 +47,13 @@ def test_get_author_by_meta():
     </head>
     """)
     assert get_author(soup) == "Joker"
+
+
+def test_parse_with_none():
+    text = """
+    <head></head>
+    """
+    assert parse(text) == {"author": None,
+                           "image": None,
+                           "icon": None,
+                           "description": None}
