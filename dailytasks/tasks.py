@@ -20,15 +20,18 @@ category_list = [{'color': '#ff0094', 'name': 'ネタ（メモ・その他いろ
                  {'color': '#aa00ff', 'name': 'サイエンス（科学・学問・テクノロジー）'}]
 
 
+def validate_datearg(datearg):
+    """Input validation."""
+    if not match(parser.valid_datearg_pattern, datearg):
+        raise ValueError("datearg is not valid: {}".format(datearg))
+
+
 def get_result_json(datearg):
     root_dir = Path(__file__).parent.parent.absolute()
     return root_dir.joinpath("json", "result-{}.json".format(datearg))
 
 
 def get_headline_url(datearg):
-    if not match(parser.valid_datearg_pattern, datearg):
-        raise ValueError("datearg is not valid: {}".format(datearg))
-
     result_json_path = get_result_json(datearg)
 
     if os.path.exists(result_json_path):
@@ -89,6 +92,8 @@ def get_embed_items(category, cateogry_items):
 
 @app.task
 def add(datearg):
+    validate_datearg(datearg)
+
     headline_url = get_headline_url(datearg)
 
     if not headline_url:
@@ -118,7 +123,7 @@ def add(datearg):
     result_json_path = get_result_json(datearg)
 
     with open(result_json_path, "w") as f:
-        embeds_result = {"embeds": embeds}
+        embeds_result = {"headline_url": headline_url, "embeds": embeds}
         f.write(json.dumps(embeds_result, ensure_ascii=False, indent=4))
 
     # webhook
@@ -129,15 +134,8 @@ def add(datearg):
 
 @app.task
 def ping(datearg):
-    headline_url = get_headline_url(datearg)
+    """Just validate user's input."""
 
-    if not headline_url:
-        return "PONG"
+    validate_datearg(datearg)
 
-    result_json_path = get_result_json(datearg)
-
-    with open(result_json_path, "w") as f:
-        headline_result = {"headline_url": headline_url}
-        f.write(json.dumps(headline_result, ensure_ascii=False, indent=4))
-
-    return "PONG: {}".format(headline_url)
+    return "PONG"
