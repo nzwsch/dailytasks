@@ -80,9 +80,5 @@ def add(url):
 
 
 @app.task
-def mul(x, y):
-    return x * y
-
-
-if __name__ == "__main__":
-    execute('https://gigazine.net/news/20200703-headline/')
+def ping(datearg):
+    return "PONG: {}".format(datearg)

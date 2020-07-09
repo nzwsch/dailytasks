@@ -1,2 +1,5 @@
 # At every 15th minute past every hour from 18 through 19 on every day-of-week from Monday through Friday.
 */15 18-19 * * 1-5 daily.sh 2>&1
+
+# At every minute.
+* * * * * ping.sh 2>&1
