@@ -25,6 +25,36 @@ def get_result_json(datearg):
     return root_dir.joinpath("json", "result-{}.json".format(datearg))
 
 
+def get_headline_url(datearg):
+    if not match(parser.valid_datearg_pattern, datearg):
+        raise ValueError("datearg is not valid: {}".format(datearg))
+
+    result_json_path = get_result_json(datearg)
+
+    if os.path.exists(result_json_path):
+        return None
+
+    # カテゴリ: ヘッドライン
+    r = requests.get("https://gigazine.net/news/C19/")
+
+    if r.status_code >= 300:
+        # TODO: use logging
+        print(r.status_code, r.text)
+        return None
+
+    # parse links
+    headline_url = 'https://gigazine.net/news/{}-headline/'.format(datearg)
+    headline_links = parser.get_headline_links(r.content)
+
+    if not headline_url in headline_links:
+        # TODO: use logging
+        print(json.dumps(headline_links, ensure_ascii=False, indent=4))
+        print('not found {} in headline_links'.format(headline_url))
+        return None
+
+    return headline_url
+
+
 def get_embed_items(category, cateogry_items):
     # TODO: use logging
     print(len(cateogry_items), category['name'])
@@ -58,8 +88,13 @@ def get_embed_items(category, cateogry_items):
 
 
 @app.task
-def add(url):
-    r = requests.get(url)
+def add(datearg):
+    headline_url = get_headline_url(datearg)
+
+    if not headline_url:
+        return None
+
+    r = requests.get(headline_url)
 
     og_title = parser.get_og_title(r.content)
     categories = parser.get_categories(r.content)
@@ -78,9 +113,12 @@ def add(url):
     # shuffle
     random.shuffle(embeds)
 
-    # TODO: fix json path
-    with open("json/result.json", "w") as f:
-        f.write(json.dumps(embeds, ensure_ascii=False, indent=4))
+    # save embeds to json
+    result_json_path = get_result_json(datearg)
+
+    with open(result_json_path, "w") as f:
+        embeds_result = {"embeds": embeds}
+        f.write(json.dumps(embeds_result, ensure_ascii=False, indent=4))
 
     # webhook
     status_codes = webhook.post_all(og_title, embeds)
@@ -90,35 +128,15 @@ def add(url):
 
 @app.task
 def ping(datearg):
-    if not match(parser.valid_datearg_pattern, datearg):
-        raise ValueError("datearg is not valid: {}".format(datearg))
+    headline_url = get_headline_url(datearg)
+
+    if not headline_url:
+        return "PONG"
 
     result_json_path = get_result_json(datearg)
 
-    if os.path.exists(result_json_path):
-        return None
-
-    # カテゴリ: ヘッドライン
-    r = requests.get("https://gigazine.net/news/C19/")
-
-    if r.status_code >= 300:
-        # TODO: use logging
-        print(r.text)
-        return r.status_code
-
-    # parse links
-    headline_today = 'https://gigazine.net/news/{}-headline/'.format(datearg)
-    headline_links = parser.get_headline_links(r.content)
-
-    if not headline_today in headline_links:
-        # TODO: use logging
-        print(json.dumps(headline_links, ensure_ascii=False, indent=4))
-        return 'not found {} in headline_links'.format(headline_today)
-
-    # save links to json
     with open(result_json_path, "w") as f:
-        headline_result = {"headline_today": headline_today,
-                           "headline_links": headline_links}
+        headline_result = {"headline_url": headline_url}
         f.write(json.dumps(headline_result, ensure_ascii=False, indent=4))
 
-    return "PONG: {}".format(datearg)
+    return "PONG: {}".format(headline_url)
