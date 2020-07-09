@@ -3,8 +3,12 @@ from __future__ import absolute_import, unicode_literals
 from dailytasks.celery import app
 
 import requests
+from pathlib import Path
+from re import match
 import json
+import os
 import random
+import urllib.parse
 
 from dailytasks import embed
 from dailytasks import parser
@@ -14,6 +18,11 @@ category_list = [{'color': '#ff0094', 'name': 'ネタ（メモ・その他いろ
                  {'color': '#002aff', 'name': 'ライフスタイル（人生・生活・健康）'},
                  {'color': '#ffa200', 'name': 'IT・ガジェット（ネット・ソフト・ハード・モバイル）'},
                  {'color': '#aa00ff', 'name': 'サイエンス（科学・学問・テクノロジー）'}]
+
+
+def get_result_json(datearg):
+    root_dir = Path(__file__).parent.parent.absolute()
+    return root_dir.joinpath("json", "result-{}.json".format(datearg))
 
 
 def get_embed_items(category, cateogry_items):
@@ -81,4 +90,35 @@ def add(url):
 
 @app.task
 def ping(datearg):
+    if not match(parser.valid_datearg_pattern, datearg):
+        raise ValueError("datearg is not valid: {}".format(datearg))
+
+    result_json_path = get_result_json(datearg)
+
+    if os.path.exists(result_json_path):
+        return None
+
+    # カテゴリ: ヘッドライン
+    r = requests.get("https://gigazine.net/news/C19/")
+
+    if r.status_code >= 300:
+        # TODO: use logging
+        print(r.text)
+        return r.status_code
+
+    # parse links
+    headline_today = 'https://gigazine.net/news/{}-headline/'.format(datearg)
+    headline_links = parser.get_headline_links(r.content)
+
+    if not headline_today in headline_links:
+        # TODO: use logging
+        print(json.dumps(headline_links, ensure_ascii=False, indent=4))
+        return 'not found {} in headline_links'.format(headline_today)
+
+    # save links to json
+    with open(result_json_path, "w") as f:
+        headline_result = {"headline_today": headline_today,
+                           "headline_links": headline_links}
+        f.write(json.dumps(headline_result, ensure_ascii=False, indent=4))
+
     return "PONG: {}".format(datearg)

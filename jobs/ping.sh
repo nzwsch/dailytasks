@@ -1,6 +1,6 @@
 #!/bin/sh
 
-datearg=$(date "+%Y%m%d")
+datearg="20200708" # $(date "+%Y%m%d")
 
 curl -sS \
     -X POST \
