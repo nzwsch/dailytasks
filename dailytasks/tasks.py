@@ -103,6 +103,7 @@ def add(datearg):
 
     for key in categories.keys():
         if key in [c['name'] for c in category_list]:
+            # TODO: use logging
             print(key)
             category = next(c for c in category_list if c['name'] == key)
             cateogry_items = categories[key]

@@ -22,7 +22,6 @@ def get_categories(text):
     categories = {}
     category = None
 
-    # print(len(prefaces))
     for preface in prefaces:
         big = preface.find('big')
 
@@ -42,13 +41,11 @@ def get_categories(text):
 
 if __name__ == "__main__":
     import json
-    from pprint import pprint
 
     text = ""
     with open("html/20200706-headline.html") as f:
         text = f.read()
     cats = get_categories(text)
-    pprint(cats)
 
     with open("json/result.json", "w") as f:
         f.write(json.dumps(cats, ensure_ascii=False, indent=4))

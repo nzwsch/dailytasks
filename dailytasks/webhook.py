@@ -40,8 +40,8 @@ def post_link(title, embeds):
         "embeds": embeds
     })
 
-    # TODO: use logging instead
     if r.status_code >= 300:
+        # TODO: use logging
         print(r.status_code, r.text)
 
     return r.status_code
