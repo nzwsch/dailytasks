@@ -1,7 +1,5 @@
 from bs4 import BeautifulSoup
 
-max_len = 60
-
 
 def get_author(soup):
     ogrp_author = soup.select_one('meta[property="og:article:author" i]')
@@ -40,16 +38,21 @@ def get_description(soup):
     twtr_desc = soup.select_one('meta[property="twitter:description" i]')
     meta_desc = soup.select_one('meta[name="description" i]')
 
-    raw_desc = (ogrp_desc and ogrp_desc.get('content') or
-                twtr_desc and twtr_desc.get('content') or
-                meta_desc and meta_desc.get('content'))
+    return (ogrp_desc and ogrp_desc.get('content') or
+            twtr_desc and twtr_desc.get('content') or
+            meta_desc and meta_desc.get('content'))
 
-    description = raw_desc.replace('\n', '')
 
-    if len(description) > max_len:
-        return '{}...'.format(description[0:max_len-1])
+def summarize(text, max_len=60):
+    if not text:
+        return None
+
+    line_text = text.replace('\n', '')
+
+    if len(line_text) > max_len:
+        return '{}...'.format(line_text[0:max_len])
     else:
-        return description
+        return line_text
 
 
 def parse(text):
@@ -63,22 +66,4 @@ def parse(text):
     return {'author': author,
             'image': image,
             'icon': icon,
-            'description': description}
-
-
-if __name__ == "__main__":
-    import json
-
-    with open("html/covid-health-transmit-scientists-idJPKBN24705X.html") as f:
-        text = f.read()
-        result = parse(text)
-
-    with open("json/result-idJPKBN24705X.json", "w") as f:
-        f.write(json.dumps(result, ensure_ascii=False, indent=4))
-
-    with open("html/000981.html") as f:
-        text = f.read()
-        result = parse(text)
-
-    with open("json/result-000981.json", "w") as f:
-        f.write(json.dumps(result, ensure_ascii=False, indent=4))
+            'description': summarize(description)}

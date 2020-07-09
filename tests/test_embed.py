@@ -1,10 +1,28 @@
 from bs4 import BeautifulSoup
-from dailytasks.embed import get_author
-from dailytasks.embed import parse
+from dailytasks.embed import get_author, summarize, parse
 
 
 def make_soup(text):
     return BeautifulSoup(text, "html5lib")
+
+
+def test_summarize_return_none():
+    assert summarize(None) == None
+
+
+def test_summarize_return_short_text():
+    long_text = "abcdefghij" * 6
+    assert summarize("short text") == "short text"
+
+
+def test_summarize_return_long_text_to_not_summarized():
+    long_text = "abcdefghij" * 6
+    assert summarize(long_text, 60) == long_text
+
+
+def test_summarize_return_long_text_to_summarized():
+    long_text = "abcdefghij" * 6
+    assert summarize(long_text + "k", 60) == long_text + "..."
 
 
 def test_get_author_by_opengraph_author():
