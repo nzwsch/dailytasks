@@ -1,1 +1,2 @@
 html/20200706-headline.html filter=lfs diff=lfs merge=lfs -text
+html/c19-20200709.html filter=lfs diff=lfs merge=lfs -text
