@@ -1,0 +1,14 @@
+cache:
+  paths:
+    - .cache/pip
+
+test:
+  image: python:3.8.3-slim-buster
+  stage: test
+  variables:
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  before_script:
+    - pip install pytest==5.4.3
+    - pip install -r requirements.txt
+  script:
+    - pytest
