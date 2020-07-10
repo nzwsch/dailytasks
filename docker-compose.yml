@@ -5,13 +5,9 @@ services:
     image: rabbitmq:3.8.5-alpine
     logging:
       driver: none
-    networks:
-      - private
 
   cron:
     build: ./jobs
-    networks:
-      - private
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -22,33 +18,13 @@ services:
       WEBHOOK_URL: ${WEBHOOK_URL}
     depends_on:
       - rabbitmq
-    networks:
-      - private
     volumes:
       - .:/app
-
-  nginx:
-    build: ./web
-    logging:
-      driver: none
-    depends_on:
-      - flower
-    networks:
-      - public
-    ports:
-      - 8080:80
 
   flower:
     build: .
     depends_on:
       - rabbitmq
     command: flower -A dailytasks --port=5555
-    networks:
-      - private
-      - public
     volumes:
       - .:/app
-
-networks:
-  private:
-  public:
