@@ -6,6 +6,7 @@
 **/.git
 **/.gitattributes
 **/.gitignore
+**/.gitkeep
 **/.project
 **/.pytest_cache
 **/.settings
@@ -22,7 +23,6 @@
 **/Dockerfile*
 **/html
 **/jobs
-**/json
 **/node_modules
 **/npm-debug.log
 **/obj
