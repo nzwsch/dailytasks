@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-valid_datearg_pattern = r"^(20\d{2})(0?[1-9]|1[0-2])(0[1-9]|[12]\d|30|31)$"
+DATEARG_PATTERN = r"^(20\d{2})(0?[1-9]|1[0-2])(0[1-9]|[12]\d|30|31)$"
 
 
 def get_og_title(text):

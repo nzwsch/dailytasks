@@ -1,7 +1,5 @@
 from __future__ import absolute_import, unicode_literals
 
-from dailytasks.celery import app
-
 import requests
 from pathlib import Path
 from re import match
@@ -9,6 +7,8 @@ import json
 import os
 import random
 import urllib.parse
+
+from dailytasks.celery import app
 
 from dailytasks import embed
 from dailytasks import parser
@@ -22,7 +22,7 @@ category_list = [{'color': '#ff0094', 'name': 'ネタ（メモ・その他いろ
 
 def validate_datearg(datearg):
     """Input validation."""
-    if not match(parser.valid_datearg_pattern, datearg):
+    if not match(parser.DATEARG_PATTERN, datearg):
         raise ValueError("datearg is not valid: {}".format(datearg))
 
 

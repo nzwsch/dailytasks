@@ -3,8 +3,8 @@ import requests
 import time
 import urllib.parse
 
-per_seconds = 2  # per two seconds
-webhook_url = environ.get('WEBHOOK_URL')
+SLEEP_DURATION = 2  # per two seconds
+WEBHOOK_URL = environ.get('WEBHOOK_URL')
 
 
 def chunks(lst, n):
@@ -35,7 +35,7 @@ def to_embed(title=None, url=None, category=None, color=None, author=None, image
 
 
 def post_link(title, embeds):
-    r = requests.post("{}?wait=true".format(webhook_url), json={
+    r = requests.post("{}?wait=true".format(WEBHOOK_URL), json={
         "content": title,
         "embeds": embeds
     })
@@ -55,7 +55,7 @@ def post_all(og_title, embeds):
     for embeded_part in embeded_partition:
         title = '{} ({}/{})'.format(og_title, iterate, len(embeded_partition))
         status_code = post_link(title, embeded_part)
-        time.sleep(per_seconds)
+        time.sleep(SLEEP_DURATION)
         iterate += 1
         status_codes.append(status_code)
 

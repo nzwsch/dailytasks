@@ -1,6 +1,7 @@
 from re import match
 from pathlib import Path
-from dailytasks.parser import get_og_title, get_headline_links, get_categories, valid_datearg_pattern
+
+from dailytasks.parser import get_og_title, get_headline_links, get_categories, DATEARG_PATTERN
 
 
 def read_html(filename):
@@ -10,12 +11,12 @@ def read_html(filename):
     return text
 
 
-def test_valid_datearg_pattern():
-    assert match(valid_datearg_pattern, "20200709")
+def test_DATEARG_PATTERN():
+    assert match(DATEARG_PATTERN, "20200709")
 
 
-def test_not_valid_datearg_pattern():
-    assert not match(valid_datearg_pattern, "12345678")
+def test_not_DATEARG_PATTERN():
+    assert not match(DATEARG_PATTERN, "12345678")
 
 
 def test_get_og_title():
