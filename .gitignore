@@ -1,7 +1,8 @@
 **/.env
 **/html/*
-**/json
+**/json/*
 
 # excludes
 !**/html/20200706-headline.html
 !**/html/c19-20200709.html
+!**/json/.gitkeep
