@@ -72,7 +72,20 @@ def get_embed_items(category, cateogry_items):
         color = category['color']
 
         try:
-            embed_item = webhook.get_embed_item_by_href(text,
+            # GET request
+            r = requests.get(href)
+
+            # TODO: use logging
+            print(r.status_code, href, r.headers.get('content-type'))
+
+            # sometime they give pdf link to us...
+            if r.headers.get('content-type').startswith("text/html"):
+                result = embed.parse(r.content)
+            else:
+                result = {}
+
+            embed_item = webhook.get_embed_item_by_href(result,
+                                                        text,
                                                         href,
                                                         category_name,
                                                         color)

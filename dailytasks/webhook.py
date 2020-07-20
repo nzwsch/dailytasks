@@ -72,19 +72,7 @@ def get_banned_item_by_href(text, href, category_name, color):
     return embed_item
 
 
-def get_embed_item_by_href(text, href, category_name, color):
-    # GET request
-    r = requests.get(href)
-
-    # TODO: use logging
-    print(r.status_code, href, r.headers.get('content-type'))
-
-    # sometime they give pdf link to us...
-    if r.headers.get('content-type').startswith("text/html"):
-        result = embed.parse(r.content)
-    else:
-        result = {}
-
+def get_embed_item_by_href(result, text, href, category_name, color):
     embed_item = to_embed(title=text,
                           url=href,
                           category=category_name,
