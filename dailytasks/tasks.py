@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import requests
+from requests.exceptions import TooManyRedirects
 from pathlib import Path
 from re import match
 import json
@@ -70,25 +71,16 @@ def get_embed_items(category, cateogry_items):
         category_name = 'カテゴリ◆{}'.format(category['name'])
         color = category['color']
 
-        # GET request
-        r = requests.get(href)
-
-        # TODO: use logging
-        print(r.status_code, href, r.headers.get('content-type'))
-
-        # sometime they give pdf link to us...
-        if r.headers.get('content-type').startswith("text/html"):
-            result = embed.parse(r.content)
-        else:
-            result = {}
-
-        embed_item = webhook.to_embed(title=text,
-                                      url=href,
-                                      category=category_name,
-                                      color=color,
-                                      author=result.get('author'),
-                                      image=result.get('image'),
-                                      description=result.get('description'))
+        try:
+            embed_item = webhook.get_embed_item_by_href(text,
+                                                        href,
+                                                        category_name,
+                                                        color)
+        except TooManyRedirects:
+            embed_item = webhook.get_banned_item_by_href(text,
+                                                         href,
+                                                         category_name,
+                                                         color)
 
         embed_items.append(embed_item)
 
