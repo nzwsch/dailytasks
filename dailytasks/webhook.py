@@ -60,3 +60,25 @@ def post_all(og_title, embeds):
         status_codes.append(status_code)
 
     return status_codes
+
+
+def get_banned_item_by_href(text, href, category_name, color):
+    embed_item = to_embed(title="feels ban man...",
+                          description="\n".join([text, href]),
+                          category=category_name,
+                          color=color,
+                          image="https://emoji.gg/assets/emoji/FeelsBanMan.png")
+
+    return embed_item
+
+
+def get_embed_item_by_href(result, text, href, category_name, color):
+    embed_item = to_embed(title=text,
+                          url=href,
+                          category=category_name,
+                          color=color,
+                          author=result.get('author'),
+                          image=result.get('image'),
+                          description=result.get('description'))
+
+    return embed_item

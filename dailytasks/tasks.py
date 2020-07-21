@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import requests
+from requests.exceptions import TooManyRedirects
 from pathlib import Path
 from re import match
 import json
@@ -24,6 +25,15 @@ def validate_datearg(datearg):
     """Input validation."""
     if not match(parser.DATEARG_PATTERN, datearg):
         raise ValueError("datearg is not valid: {}".format(datearg))
+
+
+def get_blacklist():
+    bl_path = Path(__file__).parent.parent.absolute().joinpath("blacklist.txt")
+
+    with open(bl_path, "r") as f:
+        blacklist = [line.strip() for line in f.readlines()]
+
+    return blacklist
 
 
 def get_result_json(datearg):
@@ -62,33 +72,45 @@ def get_embed_items(category, cateogry_items):
     # TODO: use logging
     print(len(cateogry_items), category['name'])
 
+    blacklist = get_blacklist()
+
     embed_items = []
 
     for item in cateogry_items:
+        # reject greedy websites...
+        if urllib.parse.urlparse(item['href']).netloc in blacklist:
+            # TODO: use logging
+            print('{} is ignored!'.format(item['href']))
+            continue
+
         text = item['text']
         href = item['href']
         category_name = 'カテゴリ◆{}'.format(category['name'])
         color = category['color']
 
-        # GET request
-        r = requests.get(href)
+        try:
+            # GET request
+            r = requests.get(href)
 
-        # TODO: use logging
-        print(r.status_code, href, r.headers.get('content-type'))
+            # TODO: use logging
+            print(r.status_code, href, r.headers.get('content-type'))
 
-        # sometime they give pdf link to us...
-        if r.headers.get('content-type').startswith("text/html"):
-            result = embed.parse(r.content)
-        else:
-            result = {}
+            # sometime they give pdf link to us...
+            if r.headers.get('content-type').startswith("text/html"):
+                result = embed.parse(r.content)
+            else:
+                result = {}
 
-        embed_item = webhook.to_embed(title=text,
-                                      url=href,
-                                      category=category_name,
-                                      color=color,
-                                      author=result.get('author'),
-                                      image=result.get('image'),
-                                      description=result.get('description'))
+            embed_item = webhook.get_embed_item_by_href(result,
+                                                        text,
+                                                        href,
+                                                        category_name,
+                                                        color)
+        except TooManyRedirects:
+            embed_item = webhook.get_banned_item_by_href(text,
+                                                         href,
+                                                         category_name,
+                                                         color)
 
         embed_items.append(embed_item)
 
