@@ -27,6 +27,15 @@ def validate_datearg(datearg):
         raise ValueError("datearg is not valid: {}".format(datearg))
 
 
+def get_blacklist():
+    bl_path = Path(__file__).parent.parent.absolute().joinpath("blacklist.txt")
+
+    with open(bl_path, "r") as f:
+        blacklist = [line.strip() for line in f.readlines()]
+
+    return blacklist
+
+
 def get_result_json(datearg):
     root_dir = Path(__file__).parent.parent.absolute()
     return root_dir.joinpath("json", "result-{}.json".format(datearg))
@@ -63,9 +72,17 @@ def get_embed_items(category, cateogry_items):
     # TODO: use logging
     print(len(cateogry_items), category['name'])
 
+    blacklist = get_blacklist()
+
     embed_items = []
 
     for item in cateogry_items:
+        # reject greedy websites...
+        if urllib.parse.urlparse(item['href']).netloc in blacklist:
+            # TODO: use logging
+            print('{} is ignored!'.format(item['href']))
+            continue
+
         text = item['text']
         href = item['href']
         category_name = 'カテゴリ◆{}'.format(category['name'])
